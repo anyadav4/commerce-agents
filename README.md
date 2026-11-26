@@ -76,7 +76,7 @@ its analytics, catalog, inventory, pricing, and campaign systems.
 | [`plugins/commerce-builder/`](plugins/commerce-builder/) | The Claude Code plugin | — |
 | [`docs/`](docs/) | `safety.md` (enforced rules), `backends.md` (mapping your systems), `deployment.md` (other platforms) | — |
 | [`tests/`](tests/) | Cross-package suites; each package also has its own `tests/` | — |
-| [`scripts/`](scripts/) | `install.sh`, `run_demo.py`, `smoke_chat.py`, `screenshot_tour.py`, `check.py`, `deploy_managed_agent.sh`, `verify_all.py` | — |
+| [`scripts/`](scripts/) | `install.sh`, `run_demo.py`, `smoke_chat.py`, `screenshot_tour.py`, `check.py`, `deploy_managed_agent.sh`, `verify_all.py`, `load_algolia.py` | — |
 
 ## Three ways to run an agent
 

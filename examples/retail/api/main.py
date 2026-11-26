@@ -22,23 +22,30 @@ from demo_common import (
     build_storefront_host,
     load_demo_env,
 )
+from demo_common.tracing import trace_turns, traced_client
 from shopping_agent import ProductDetails
 from shopping_agent_runtime import ShoppingAgent
 
 from .agent_config import build_shopping_config
+from .algolia_retail import AlgoliaRetail
 from .merchant import create_merchant_router
 from .mock_retail import DATA_DIR, MockRetail
 
 load_demo_env(DATA_DIR.parent)
 PRODUCT_IMAGES = DATA_DIR.parent / "storefront-web" / "public" / "products"
 
-backend = MockRetail()
+# Search is served by Algolia when ALGOLIA_APP_ID, ALGOLIA_SEARCH_KEY and ALGOLIA_INDEX are set.
+backend = AlgoliaRetail.from_env() or MockRetail()
+shopping_config = build_shopping_config()
 agent = ShoppingAgent(
     backend=backend,
     skills_dir=REPO_ROOT / "shopping-agent" / "skills",
-    config=build_shopping_config(),
+    config=shopping_config,
+    # A LangSmith-traced client when LANGSMITH_TRACING is on, else the agent's own.
+    client=traced_client(timeout=shopping_config.request_timeout_s),
     memory_store=JsonFileMemoryStore(DATA_DIR / ".memory-store.json"),
 )
+trace_turns(agent, "retail_chat_turn")
 
 
 def product_detail(product: ProductDetails) -> dict:

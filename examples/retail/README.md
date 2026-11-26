@@ -58,6 +58,11 @@ Single prompts, each in a fresh session:
 
 - `api/mock_retail.py`: `MockRetail`, the `StorefrontBackend` over the fixtures, plus
   the price and review summaries the product page shows.
+- `api/algolia_retail.py`: `AlgoliaRetail`, `MockRetail` with search served by an Algolia
+  index. Algolia ranks; each hit's `objectID` is a catalog id and the record returned is the
+  catalog's, so the cart, fulfilment, and portal are unchanged. A failed search falls back to
+  the catalog search. Set the three `ALGOLIA_*` variables to turn it on; `index_records` and
+  `INDEX_SETTINGS` define what the index holds.
 - `api/mock_merchant.py`: `MockRetailMerchant`, the `MerchantBackend` over the same
   catalog; applied changes write back to it, and `execute_analysis_query` serves the
   analysis delegate from a read-only SQLite view of the same state.
@@ -67,6 +72,19 @@ Single prompts, each in a fresh session:
   the product-detail enrichment, and the add-to-cart button route.
 - `api/merchant.py`: the overview's KPI trends and insight cards.
 - `storefront-web/`, `merchant-web/`: this example's cards, views, and tokens, over `../web-shared/`.
+
+## Algolia search
+
+```bash
+python scripts/load_algolia.py --export examples/retail/data/algolia-catalog.json   # records, to upload by hand
+python scripts/load_algolia.py                                                       # settings + records, with ALGOLIA_ADMIN_KEY
+```
+
+The API logs one `algolia search session=<tag> … hits= kept=` line per search at `INFO`, with
+the same `session=` tag as that turn's `model call` lines; the query itself is logged at `DEBUG`.
+`LANGSMITH_TRACING=true` makes each chat turn one LangSmith trace holding its model calls and
+the Algolia search (`demo_common/tracing.py`). A trace holds the conversation, customer text
+included.
 
 ## Data
 

@@ -60,13 +60,20 @@ def load_demo_env(example_root: Path) -> None:
     """Load credentials before any agent is constructed. A variable already in the
     environment wins; the example's own ``.env`` fills in the rest, then the repo-root
     one; ``COMMERCE_DEMO_AUTH=sdk`` clears key variables instead so the Anthropic SDK's
-    own credential chain is used."""
+    own credential chain is used. ``DEMO_USE_SYSTEM_CERTS=1`` makes TLS verify against the
+    operating system's certificate store (the ``truststore`` package), for a network whose
+    proxy re-signs HTTPS traffic with a root the Python bundle lacks."""
     if os.environ.get("COMMERCE_DEMO_AUTH", "").lower() == "sdk":
         os.environ.pop("ANTHROPIC_API_KEY", None)
         os.environ.pop("ANTHROPIC_AUTH_TOKEN", None)
     else:
         load_dotenv(example_root / ".env", override=False)
         load_dotenv(REPO_ROOT / ".env", override=False)
+    # After the .env files, so the variable may be set there; before any client is built.
+    if os.environ.get("DEMO_USE_SYSTEM_CERTS") == "1":
+        import truststore
+
+        truststore.inject_into_ssl()
 
 
 def host_approval_default() -> bool:

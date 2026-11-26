@@ -33,6 +33,10 @@ examples = [
   "fastapi>=0.132",
   "uvicorn>=0.30",
   "python-dotenv>=1.0",
+  # Optional behavior the example APIs switch on by environment: LangSmith tracing
+  # (demo_common/tracing.py) and the OS certificate store (DEMO_USE_SYSTEM_CERTS).
+  "langsmith>=0.4",
+  "truststore>=0.9",
 ]
 
 [tool.hatch.build.targets.wheel]

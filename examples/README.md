@@ -9,7 +9,7 @@ prompts to try on both surfaces, and what it adds to the libraries.
 
 | Path | Contents |
 |---|---|
-| `demo_common/` | Host code the four APIs share: app and middleware (`host.py`), session store (`sessions.py`), storefront routes (`storefront.py`), merchant router (`merchant.py`), memory routes and fixture seeder (`memory.py`), mock-backend helpers (`*_fixtures.py`) |
+| `demo_common/` | Host code the four APIs share: app and middleware (`host.py`), session store (`sessions.py`), LangSmith tracing (`tracing.py`), storefront routes (`storefront.py`), merchant router (`merchant.py`), memory routes and fixture seeder (`memory.py`), mock-backend helpers (`*_fixtures.py`) |
 | `web-shared/` | The npm package the eight web apps import: the API client, the session and turn hooks, the event types (`protocol.ts` mirrors `commerce_common/streaming.py`), the transcript and inspector components, shared primitives and icons, and the two app frames (`storefront/`, `portal/`) |
 | `package.json` | The npm workspace: `web-shared` plus every `*/storefront-web` and `*/merchant-web` (`npm ci` installs all of them) |
 | `<vertical>/api/` | One FastAPI process: the two mock backends, the two agent configs (`agent_config.py`), the vertical's own routes and presentation extensions, and the merchant router mounted under `/api/merchant` |
@@ -44,6 +44,10 @@ only the session id, in `X-Session-Id`, and the routes read the principal from i
 | `ANTHROPIC_API_KEY` or `ANTHROPIC_AUTH_TOKEN` | Chat credentials; the environment wins over `<vertical>/.env`, which wins over the repo-root `.env` | `demo_common/host.py` | unset (client credential chain) |
 | `COMMERCE_DEMO_AUTH` | `sdk` skips the `.env` files and clears the key variables so the client's credential chain is used; `run_demo.py --federated` sets it | `demo_common/host.py` | unset |
 | `DEMO_ALLOWED_HOSTS` | Comma-separated Host values the API answers to besides `localhost` and `127.0.0.1` | `demo_common/host.py` | unset |
+| `ALGOLIA_APP_ID`, `ALGOLIA_SEARCH_KEY`, `ALGOLIA_INDEX` | All three set: the retail API serves search from that Algolia index; any unset: the catalog's own keyword search | `retail/api/algolia_retail.py` | unset |
+| `ALGOLIA_ADMIN_KEY` | Write key for `scripts/load_algolia.py`; the API never reads it | `scripts/load_algolia.py` | unset |
+| `DEMO_USE_SYSTEM_CERTS` | `1` verifies TLS against the operating system's certificate store, for a proxy that re-signs HTTPS | `demo_common/host.py` | unset |
+| `LANGSMITH_TRACING`, `LANGSMITH_API_KEY`, `LANGSMITH_PROJECT`, `LANGSMITH_ENDPOINT` | `LANGSMITH_TRACING=true` sends each retail chat turn to LangSmith as one trace, with its model calls and Algolia search nested under it | `demo_common/tracing.py` | off |
 | `DEMO_LOG_LEVEL` | `INFO` writes one line per model call; `DEBUG` adds each request and response | `demo_common/host.py` | `INFO` |
 | `MERCHANT_REQUIRE_HOST_APPROVAL` | `0` lets an approval typed in chat apply a change; `1` requires the preview card's button | `demo_common/host.py` | `1` |
 | `MERCHANT_ANALYSIS_CODE_EXECUTION` | `1` mounts the hosted code execution tool in the retail analysis delegate | `retail/api/agent_config.py` | `0` |

@@ -16,7 +16,6 @@
 -e ./merchant-agent/core
 -e ./merchant-agent/runtime-messages-api
 -e ./merchant-agent/runtime-agent-sdk
-
 annotated-doc==0.0.5
 annotated-types==0.8.0
 anthropic==0.122.0
@@ -24,6 +23,7 @@ anyio==4.14.2
 attrs==26.1.0
 certifi==2026.7.22
 cffi==2.1.1
+charset-normalizer==3.5.3
 claude-agent-sdk==0.2.139
 click==8.4.2
 cryptography==50.0.0
@@ -32,13 +32,18 @@ docstring-parser==0.18.0
 fastapi==0.141.1
 h11==0.16.0
 httpcore==1.0.9
+httpcore2==2.16.2
 httpx==0.28.1
 httpx-sse==0.4.3
+httpx2==2.16.2
 idna==3.18
 jiter==0.16.0
 jsonschema==4.26.0
 jsonschema-specifications==2025.9.1
+langsmith==0.16.2
 mcp==1.29.0
+orjson==3.13.0
+packaging==26.4
 pycparser==3.0
 pydantic==2.13.4
 pydantic-core==2.46.4
@@ -48,10 +53,18 @@ python-dotenv==1.2.2
 python-multipart==0.0.32
 pyyaml==6.0.3
 referencing==0.37.0
+requests==2.34.2
+requests-toolbelt==1.0.0
 rpds-py==2026.6.3
 sniffio==1.3.1
 sse-starlette==3.4.8
 starlette==1.6.0
+truststore==0.10.5
 typing-extensions==4.16.0
 typing-inspection==0.4.4
+urllib3==2.8.0
+uuid-utils==0.19.0
 uvicorn==0.52.3
+websockets==17.4
+xxhash==4.1.0
+zstandard==0.25.0

@@ -90,3 +90,24 @@ async def test_spawn_background_holds_the_task_until_it_finishes():
             break
         await asyncio.sleep(0)
     assert not _background_tasks
+
+
+def test_system_certs_can_be_switched_on_from_an_env_file(tmp_path, monkeypatch):
+    """The switch is read after the .env files load, since that is where it is usually set."""
+    import os
+
+    import truststore
+
+    from demo_common import host
+
+    (tmp_path / ".env").write_text("DEMO_USE_SYSTEM_CERTS=1\n", encoding="utf-8")
+    monkeypatch.setattr(host, "REPO_ROOT", tmp_path / "elsewhere")
+    monkeypatch.delenv("COMMERCE_DEMO_AUTH", raising=False)
+    monkeypatch.delenv("DEMO_USE_SYSTEM_CERTS", raising=False)
+    injected = []
+    monkeypatch.setattr(truststore, "inject_into_ssl", lambda: injected.append(True))
+    try:
+        host.load_demo_env(tmp_path)
+    finally:
+        os.environ.pop("DEMO_USE_SYSTEM_CERTS", None)
+    assert injected == [True]

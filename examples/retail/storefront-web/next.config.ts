@@ -8,4 +8,9 @@ const nextConfig: NextConfig = {
   transpilePackages: ["web-shared"],
 };
 
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['192.168.1.81'],
+}
+
 export default nextConfig;
